@@ -1,6 +1,9 @@
-// MAIL : mjesuslobo@gmail.com
 
-d3.csv("https://mjlobo.github.io/teaching/infovis/data/trajets.csv").then(function(trajets) {
+scatterplotGDPvsHRS();
+
+
+
+/*d3.csv("https://mjlobo.github.io/teaching/infovis/data/trajets.csv").then(function(trajets) {
   d3.csv("https://mjlobo.github.io/teaching/infovis/data/retards.csv").then(function(retards) {
     d3.csv("https://mjlobo.github.io/teaching/infovis/data/emissions.csv").then(function(emissions) {
       d3.csv("https://mjlobo.github.io/teaching/infovis/data/aeroports.csv").then(function(aeroports) {
@@ -39,5 +42,5 @@ function dataLoaded(trajets, retards, emissions, aeroports) {
   linesEmissionsPerYear(emissions, 'NOX', ' in tonnes'); // oxyde d'azote
   linesEmissionsPerYear(emissions, 'COVNM', ' in tonnes'); // méthane
   linesEmissionsPerYear(emissions, 'TSP', ' in tonnes'); // particules
-}
+}*/
 

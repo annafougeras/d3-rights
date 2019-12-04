@@ -21,9 +21,9 @@ function mapFlights(trajets, aeroports, fsc) {
   const path = d3.geoPath()
 
   const svg = d3.select("body").append("svg").attr("width", width).attr("height", height);
-  const projection = d3.geoConicConformal()
+  const projection = d3.geoMercator()
     .center([2.454071, 46.279229])
-    .scale(2600)
+    .scale(120)
     .translate([width / 2, height / 2]);
 
   //we create a function to scale the area of the circles. This is visually more accurate than scaling the circle radius.
@@ -42,7 +42,7 @@ function mapFlights(trajets, aeroports, fsc) {
 
   path.projection(projection)
 
-  return d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/metropole.geojson").then(function(france) {
+  return d3.json("https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json").then(function(france) {
     // this code will draw the french border by creating a path
     svg.append("path")
     .datum(france)
@@ -79,7 +79,7 @@ function mapFlights(trajets, aeroports, fsc) {
     //we create the legend
     const legend = svg.append("g")
       .attr("fill", "#777")
-      .attr("transform", "translate(700,500)")
+      .attr("transform", "translate(580,550)")
       .attr("text-anchor", "middle")
       .style("font", "10px sans-serif")
     .selectAll("g")
@@ -98,8 +98,8 @@ function mapFlights(trajets, aeroports, fsc) {
       .text(d3.format(".1s"));
 
     svg.append("text")
-    .attr("x", 650)
-    .attr("y", 520)
+    .attr("x", 530)
+    .attr("y", 570)
     .style("font-size", "12px")
     .style("font", "10px sans-serif")
     .text(fsc + " flights departures")
