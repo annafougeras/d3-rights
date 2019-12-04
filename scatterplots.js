@@ -13,7 +13,6 @@ function scatterplotGDPvsHRS() {
         rawData = rawData.filter(el => el.x !== "" && el.y !== "")
         rawData['x'] = 'GDP per capita'
         rawData['y'] = 'Human rights protection score'
-        console.log(rawData)
         drawScatterplot(rawData)
     })
 }
@@ -76,6 +75,7 @@ function drawScatterplot(data) {
       .data(data)
       .join("g")
         .attr("transform", d => `translate(${x(d.x)},${y(d.y)})`)
+        .attr("class", "point")
         .call(g => g.append("circle")
             .attr("stroke", "steelblue")
             .attr("fill", "none")
@@ -83,5 +83,21 @@ function drawScatterplot(data) {
         .call(g => g.append("text")
             .attr("dy", "0.35em")
             .attr("x", 7)
+
+            .on('mouseover',mouseoverPoint).on('mouseout',mouseoutPoint)
             .text(d => d.name));
+
+    function mouseoverPoint(event) {
+        document.querySelectorAll('.point').forEach(function(elt) {
+            if (elt.getElementsByTagName('text')[0].innerHTML != event.name) {
+                elt.setAttribute('opacity', '0.2');
+            }
+        })
+    }
+
+    function mouseoutPoint() {
+        document.querySelectorAll('.point').forEach(function(elt) {
+            elt.setAttribute('opacity', '1');
+        })
+    }
 }
