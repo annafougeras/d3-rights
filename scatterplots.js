@@ -7,14 +7,75 @@ function scatterplotGDPvsHRS() {
     d3.csv(path).then(function(rawData) {
         rawData = rawData.filter(el => el.Year == 2017)
         rawData = rawData.map(el => ({'name' : el.Entity,
-                                      'x': el['GDP per capita, PPP (in constant 2011 int-$) (constant 2011 international $)'],
-                                      'y': el['Human rights protection score'],
+                                        'x': el['Human rights protection score'],
+                                        'y': el['GDP per capita, PPP (in constant 2011 int-$) (constant 2011 international $)'],
                                     }))
         rawData = rawData.filter(el => el.x !== "" && el.y !== "")
-        rawData['x'] = 'GDP per capita'
-        rawData['y'] = 'Human rights protection score'
+        rawData['x'] = 'Human rights protection score'
+        rawData['y'] = 'GDP per capita'
         drawScatterplot(rawData)
     })
+}
+
+function scatterplotPressVsHRS() {
+    const path1 = "https://raw.githubusercontent.com/vincentfougeras/d3-rights/master/datasets/human-rights-scores.csv"
+    const path2 = "https://raw.githubusercontent.com/vincentfougeras/d3-rights/master/datasets/world-press-freedom.csv"
+    d3.csv(path1).then(function(rawData1) {
+        d3.csv(path2).then(function(rawData2) {
+            rawData1 = rawData1.filter(el => el.Year == 2017)
+            rawData2 = rawData2.filter(el => el.Year == 2017)
+
+            rawData = mergeArrays(rawData1, rawData2)
+
+            rawData = rawData.map(el => ({'name' : el.Entity,
+                                        'x': el['HR'],
+                                        'y': el['PressFreedomScore'],
+                                        }))
+
+            rawData = rawData.filter(el => !!el.x && !!el.y)
+            rawData['x'] = 'Human rights protection score'
+            rawData['y'] = 'Freedom of press score'
+            drawScatterplot(rawData)
+        })
+    })
+}
+
+function incomeShareVsHRS() {
+    const path1 = "https://raw.githubusercontent.com/vincentfougeras/d3-rights/master/datasets/human-rights-scores.csv"
+    const path2 = "https://raw.githubusercontent.com/vincentfougeras/d3-rights/master/datasets/income-share-held-by-richest-10.csv"
+    d3.csv(path1).then(function(rawData1) {
+        d3.csv(path2).then(function(rawData2) {
+            rawData1 = rawData1.filter(el => el.Year == 2017)
+            rawData2 = rawData2.filter(el => el.Year == 2010)
+
+            rawData = mergeArrays(rawData1, rawData2)
+
+            rawData = rawData.map(el => ({'name' : el.Entity,
+                                        'x': el['HR'],
+                                        'y': el['Incomeshareheldbyhighest10percent'],
+                                        }))
+                                        console.log(rawData);
+
+            rawData = rawData.filter(el => !!el.x && !!el.y)
+            rawData['x'] = 'Human rights protection score'
+            rawData['y'] = 'Income share held by richest 10%'
+
+            drawScatterplot(rawData)
+        })
+    })
+}
+
+function mergeArrays(arr1, arr2) {
+    let merged = [];
+
+    for(let i=0; i<arr1.length; i++) {
+        merged.push({
+            ...arr1[i],
+            ...(arr2.find((itmInner) => itmInner.Code === arr1[i].Code))}
+        );
+    }
+
+    return merged;
 }
 
 /* Data example :
@@ -28,11 +89,11 @@ data = Array(32) [
 
 function drawScatterplot(data) {
     let y = d3.scaleLinear()
-        .domain(d3.extent(data, d => +d.y)).nice()
+        .domain(d3.extent(data, d => +d.x)).nice()
         .range([height - margin.bottom, margin.top])
 
     let x = d3.scaleLinear()
-        .domain(d3.extent(data, d => +d.x)).nice()
+        .domain(d3.extent(data, d => +d.y)).nice()
         .range([margin.left, width - margin.right])
 
     let yAxis = g => g
@@ -43,7 +104,7 @@ function drawScatterplot(data) {
             .attr("x", 4)
             .attr("text-anchor", "start")
             .attr("font-weight", "bold")
-            .text(data.y))
+            .text(data.x))
 
     let xAxis = g => g
         .attr("transform", `translate(0,${height - margin.bottom})`)
@@ -55,7 +116,7 @@ function drawScatterplot(data) {
             .attr("fill", "#000")
             .attr("font-weight", "bold")
             .attr("text-anchor", "end")
-            .text(data.x))
+            .text(data.y))
 
 
 
@@ -74,7 +135,7 @@ function drawScatterplot(data) {
       .selectAll("g")
       .data(data)
       .join("g")
-        .attr("transform", d => `translate(${x(d.x)},${y(d.y)})`)
+        .attr("transform", d => `translate(${x(d.y)},${y(d.x)})`)
         .attr("class", "point")
         .call(g => g.append("circle")
             .attr("stroke", "steelblue")

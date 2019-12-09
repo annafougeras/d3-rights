@@ -1,5 +1,38 @@
-
+// Score des droits de l'homme en 2017
 drawHumanRightsScore();
+
+// Violations des droits de l'homme en 2014
+// drawHumanRightsViolations();
+
+// Ratio des richesses détenues par les 10% les plus riches en 2010
+// drawIncomeShare();
+
+// Liberté de la presse en 2019
+// drawPressFreedom();
+
+function drawIncomeShare() {
+    const path = "https://raw.githubusercontent.com/vincentfougeras/d3-rights/master/datasets/income-share-held-by-richest-10.csv"
+    d3.csv(path, function(error, rawData) {
+        rawData = rawData.filter(el => el.Year == 2010)
+        rawData = rawData.map(el => ({'key' : el.Code,
+                                        'doc_count': +el['Incomeshareheldbyhighest10percent'],
+                                    }))
+        //rawData = rawData.filter(el => el.doc_count !== "")
+        drawMap(rawData, false)
+    })
+}
+
+function drawPressFreedom() {
+    const path = "https://raw.githubusercontent.com/vincentfougeras/d3-rights/master/datasets/world-press-freedom.csv"
+    d3.csv(path, function(error, rawData) {
+        rawData = rawData.filter(el => el.Year == 2019)
+        rawData = rawData.map(el => ({'key' : el.Code,
+                                        'doc_count': +el['PressFreedomScore'],
+                                    }))
+        //rawData = rawData.filter(el => el.doc_count !== "")
+        drawMap(rawData, false)
+    })
+}
 
 function drawHumanRightsScore() {
     const path = "https://raw.githubusercontent.com/vincentfougeras/d3-rights/master/datasets/human-rights-scores.csv"
@@ -10,6 +43,18 @@ function drawHumanRightsScore() {
                                     }))
         //rawData = rawData.filter(el => el.doc_count !== "")
         drawMap(rawData, true)
+    })
+}
+
+function drawHumanRightsViolations() {
+    const path = "https://raw.githubusercontent.com/vincentfougeras/d3-rights/master/datasets/human-rights-violations.csv"
+    d3.csv(path, function(error, rawData) {
+        rawData = rawData.filter(el => el.Year == 2014)
+        rawData = rawData.map(el => ({'key' : el.Code,
+                                        'doc_count': +el['HRV'],
+                                    }))
+        //rawData = rawData.filter(el => el.doc_count !== "")
+        drawMap(rawData, false)
     })
 }
 
